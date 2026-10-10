@@ -14,7 +14,9 @@ if (Get-Command python -ErrorAction SilentlyContinue) {
 } else { throw 'Install Python 3.10 or later, then run this script again.' }
 & $PythonExe @PythonArgs tools/mvp.py init
 if ($LASTEXITCODE -ne 0) { throw 'Initialization failed.' }
-docker image inspect iecho/maps:1.18.1-verified *> $null
+# Windows PowerShell 5.1 can treat native stderr as a terminating error.
+# A missing image is expected on the first run; redirect inside cmd.exe.
+cmd.exe /d /c 'docker image inspect iecho/maps:1.18.1-verified >nul 2>&1'
 if ($LASTEXITCODE -ne 0) {
     & $PythonExe @PythonArgs tools/build_maps.py
     if ($LASTEXITCODE -ne 0) { throw 'Verified scraper build failed; CRM can still run with docker compose up -d.' }
