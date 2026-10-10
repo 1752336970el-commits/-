@@ -1,0 +1,74 @@
+name: iecho-france
+services:
+  db:
+    image: mariadb:11.4@sha256:1292844148b311e4ed4300022a996d39083f415a963e970cf47cad1b3b18e3a6
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?Run python tools/mvp.py init first}
+      MARIADB_DATABASE: espocrm
+      MARIADB_USER: espocrm
+      MARIADB_PASSWORD: ${DB_PASSWORD:?Run initialization first}
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: [CMD, healthcheck.sh, --connect, --innodb_initialized]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    restart: unless-stopped
+  crm:
+    image: espocrm/espocrm:10.0.9@sha256:fd86fafa91fde0b3c4498d224ab4dc00eba94547f3d22fb4895aab478385d600
+    environment:
+      ESPOCRM_DATABASE_PLATFORM: Mysql
+      ESPOCRM_DATABASE_HOST: db
+      ESPOCRM_DATABASE_USER: espocrm
+      ESPOCRM_DATABASE_PASSWORD: ${DB_PASSWORD}
+      ESPOCRM_ADMIN_USERNAME: ${CRM_ADMIN_USER:-admin}
+      ESPOCRM_ADMIN_PASSWORD: ${CRM_ADMIN_PASSWORD:?Run initialization first}
+      ESPOCRM_SITE_URL: ${CRM_URL:-http://localhost:8080}
+      ESPOCRM_LANGUAGE: zh_CN
+      ESPOCRM_TIME_ZONE: Europe/Paris
+    ports:
+      - "127.0.0.1:8080:80"
+    volumes:
+      - crm-config:/var/www/html/data
+      - crm-custom:/var/www/html/custom
+      - crm-client-custom:/var/www/html/client/custom
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD-SHELL, "test \"$$(php bin/command config:get isInstalled)\" = true"]
+      interval: 5s
+      timeout: 10s
+      retries: 40
+    restart: unless-stopped
+  daemon:
+    image: espocrm/espocrm:10.0.9@sha256:fd86fafa91fde0b3c4498d224ab4dc00eba94547f3d22fb4895aab478385d600
+    entrypoint: docker-daemon.sh
+    volumes:
+      - crm-config:/var/www/html/data
+      - crm-custom:/var/www/html/custom
+      - crm-client-custom:/var/www/html/client/custom
+    depends_on:
+      crm:
+        condition: service_healthy
+    restart: unless-stopped
+  maps:
+    image: iecho/maps:1.18.1-verified
+    pull_policy: never
+    profiles: [maps]
+    command: [-data-folder, /gmapsdata]
+    environment:
+      DISABLE_TELEMETRY: "1"
+    ports:
+      - "127.0.0.1:8082:8080"
+    volumes:
+      - maps-data:/gmapsdata
+    shm_size: 1gb
+    restart: unless-stopped
+volumes:
+  db-data:
+  crm-config:
+  crm-custom:
+  crm-client-custom:
+  maps-data:

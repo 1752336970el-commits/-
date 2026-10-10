@@ -1,0 +1,21 @@
+FROM golang:1.27.1-trixie@sha256:8f58fd67ea075142d947a60e0caa4317746a55118d312f027793d382c7741734 AS builder
+COPY trust /usr/local/share/ca-certificates/iecho-environment
+RUN update-ca-certificates
+COPY maps /build/maps
+COPY scrapemate /build/scrapemate
+WORKDIR /build/maps
+RUN go mod edit -replace github.com/gosom/scrapemate=../scrapemate && go mod download
+WORKDIR /build/scrapemate
+RUN go test ./adapters/fetchers/jshttp -run '^TestIECHO' -count=1 && go test ./adapters/fetchers/stealth -run '^TestIECHO' -count=1
+WORKDIR /build/maps
+RUN CGO_ENABLED=0 go build -p 4 -mod=readonly -buildvcs=false -ldflags="-w -s" -o /build/google-maps-scraper
+
+FROM gosom/google-maps-scraper:v1.18.1@sha256:e205c02913c5a69c16fc2094b8e5b194a2f655166d2c1126d50548d216e6b1b2
+ENV DISABLE_TELEMETRY=1
+COPY trust /usr/local/share/ca-certificates/iecho-environment
+RUN update-ca-certificates && apt-get update && apt-get install -y --no-install-recommends libnss3-tools && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p /root/.pki/nssdb && certutil -N -d sql:/root/.pki/nssdb --empty-password \
+    && for cert in /usr/local/share/ca-certificates/iecho-environment/*.crt; do \
+         if [ -f "$cert" ]; then certutil -A -d sql:/root/.pki/nssdb -n "$(basename "$cert")" -t 'C,,' -i "$cert"; fi; done
+COPY --from=builder /build/google-maps-scraper /usr/bin/google-maps-scraper
+COPY --from=builder /build/scrapemate/LICENSE /usr/share/doc/iecho-scrapemate/LICENSE

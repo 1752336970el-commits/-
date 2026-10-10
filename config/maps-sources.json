@@ -1,0 +1,16 @@
+[
+  {
+    "name": "maps",
+    "repo": "gosom/google-maps-scraper",
+    "commit": "549e4b5e61c7103685ef8392f246ebdba783ed03",
+    "url": "https://codeload.github.com/gosom/google-maps-scraper/tar.gz/549e4b5e61c7103685ef8392f246ebdba783ed03",
+    "sha256": "490d77147e28042e55a11d86fe66b1792446c674c0437c4588fd0f1f279d980e"
+  },
+  {
+    "name": "scrapemate",
+    "repo": "gosom/scrapemate",
+    "commit": "859d15f56ba5ed3851587edc305fab6ee956cc71",
+    "url": "https://codeload.github.com/gosom/scrapemate/tar.gz/859d15f56ba5ed3851587edc305fab6ee956cc71",
+    "sha256": "bf7de2bb01d474be4dc0793ee49b0e64541ab3889841de77473b3758d84d8ef5"
+  }
+]

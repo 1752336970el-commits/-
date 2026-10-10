@@ -1,0 +1,23 @@
+{
+  "country": "France",
+  "fields": [
+    {"name":"buyerSector","type":"enum","label":"买家行业 / Secteur","options":["","Emballage carton","PLV et signalétique","Impression grand format","Textile et sellerie","Matériaux industriels","Autre"]},
+    {"name":"buyerRole","type":"enum","label":"客户角色 / Rôle","options":["À vérifier","Fabricant","Distributeur","Agence sans production","Autre"],"default":"À vérifier"},
+    {"name":"materials","type":"text","label":"加工材料 / Matériaux"},
+    {"name":"machineFamily","type":"enum","label":"适配设备 / Gamme","options":["À vérifier","PK / PK4","BK / BK4","TK4S","GLSC","RK / LCT","Autre"],"default":"À vérifier"},
+    {"name":"fitReason","type":"text","label":"匹配依据 / Justification"},
+    {"name":"evidenceUrl","type":"url","label":"证据网址 / Preuve","maxLength":2048},
+    {"name":"sourceUrl","type":"url","label":"来源网址 / Source","maxLength":2048},
+    {"name":"websiteDomain","type":"varchar","label":"去重域名 / Domaine","maxLength":255},
+    {"name":"reviewStage","type":"enum","label":"跟进阶段 / Suivi","options":["À qualifier","À contacter","Contacté","Répondu","Devis envoyé","Non pertinent","Ne pas contacter"],"default":"À qualifier"},
+    {"name":"nextFollowUp","type":"date","label":"下次跟进 / Relance"},
+    {"name":"draftSubject","type":"varchar","label":"法语邮件主题 / Objet","maxLength":255},
+    {"name":"draftBody","type":"text","label":"法语邮件草稿 / Brouillon"},
+    {"name":"isDemo","type":"bool","label":"演示记录 / Démonstration","default":false}
+  ],
+  "sources": [
+    "https://www.iechocutter.com/pk4-automatic-intelligent-cutting-system-product/",
+    "https://www.iechocutter.com/bk4-high-speed-digital-cutting-system-product/",
+    "https://www.iechocutter.com/tk4s-large-format-cutting-system-product/"
+  ]
+}

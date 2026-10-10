@@ -1,0 +1,8 @@
+# Trust the cloud machine's supplied CA bundle; keep TLS verification enabled.
+# This override is for the Linux cloud machine only, not Windows Docker Desktop.
+services:
+  maps:
+    environment:
+      SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
+    volumes:
+      - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt:ro

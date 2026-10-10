@@ -1,0 +1,3 @@
+company,website,email,phone,city,country,sector,role,materials,machine,fit_reason,evidence_url,source_url
+DEMO — Atelier Carton Fictif,https://carton-demo.example,,,Lyon,France,Emballage carton,Fabricant,Carton ondulé,PK / PK4,Exemple fictif de production de prototypes — à remplacer par une preuve réelle,https://carton-demo.example/atelier,https://carton-demo.example
+DEMO — Studio PLV Fictif,https://plv-demo.example,,,Lille,France,PLV et signalétique,Fabricant,Carton et panneaux,TK4S,Exemple fictif de fabrication PLV — à remplacer par une preuve réelle,https://plv-demo.example/production,https://plv-demo.example
